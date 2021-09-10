@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"google.golang.org/protobuf/proto"
 	"gowebsocket/impl"
 	"gowebsocket/platform"
-	"gowebsocket/teenpatti"
 	"time"
 )
 
@@ -17,6 +17,16 @@ func SendResponseByServer(data []byte) {
 	}
 }
 
+func BoardCaseMsg(data []byte, title string) {
+	fmt.Println("gConnectMax:", gConnectMax, "gConnArray:", gConnArray)
+	if gConnectMax > 0 {
+		for i := 0; i < int(gConnectMax); i++ {
+			x, y := gConnArray[i].RemoteAddr()
+			fmt.Println("send ", title, " data to :", x, y)
+			gConnArray[i].WriteMessage(data)
+		}
+	}
+}
 func getDataByProtocol(conn *impl.Connection, len int32, gatetype int32, msgtype int32, uid int32, protoData []byte) {
 	data := []byte{}
 	if gatetype == int32(1000) && msgtype == 1 {
@@ -48,26 +58,34 @@ func getDataByProtocol(conn *impl.Connection, len int32, gatetype int32, msgtype
 	}
 	if gatetype == 4002 && msgtype == 1 {
 		data = SendTeenPattiTableStatus()
-		if gConnectMax > 0 {
-			for i := 0; i < int(gConnectMax); i++ {
-				gConnArray[i].WriteMessage(data)
-			}
-		}
+		BoardCaseMsg(data, "SendTeenPattiTableStatus")
 		return
 	}
 	if gatetype == 4002 && msgtype == 3 {
 		data = SendTeenPattiPlayerReady()
-
+		BoardCaseMsg(data, "SendTeenPattiPlayerReady")
+		callByTimeID("GAME_BEGIN_CLOCK_TIMER", 1*time.Second, func() {
+			data = SendGameStartClock()
+			BoardCaseMsg(data, "SendGameStartClock")
+		})
+		callByTimeID("GAME_BEGIN_CLOCK_TIMER", 3*time.Second, func() {
+			data = SendPlayersCardData()
+			BoardCaseMsg(data, "SendPlayersCardData")
+		})
+		callByTimeID("GAME_ACTION_NOTIFY_TIMER", 3*time.Second, func() {
+			data = SendPlayersAtions(1)
+			BoardCaseMsg(data, "SendPlayersAtions")
+		})
 	}
 	if gatetype == 4002 && msgtype == 7 {
 
 	}
 	if gatetype == 4002 && msgtype == 13 {
-		data = SendGameBet(protoData)
+		//data = SendGameBet(protoData)
 
 	}
 	if gatetype == 4002 && msgtype == 15 {
-		data = SendPlayerLookCard()
+		//data = SendPlayerLookCard()
 
 	}
 	if gatetype == 4002 && msgtype == 17 {
@@ -95,23 +113,8 @@ func getDataByProtocol(conn *impl.Connection, len int32, gatetype int32, msgtype
 	if gatetype == 4002 && msgtype == 100 {
 
 	}
-
 	err := conn.WriteMessage(data) //发送数据
 	if err != nil {                //错误处理
 		conn.Close()
-	}
-
-	//主动推送倒计时信息
-	if gatetype == int32(platform.ServerType_SERVER_TYPE_TEEPATTI_+2) &&
-		msgtype == int32(teenpatti.TeenpattiCmd_CMD_C_MATCH_READY_REQ) &&
-		err == nil {
-
-		//SendResponseByServer(SendGameStartClock())
-		//SendResponseByServer(SendPlayersCardData())
-		//callByTimeID("GAME_ACTION_NOTIFY_TIMER",
-		//	3*time.Second,
-		//	func() {
-		//	SendResponseByServer(SendPlayersAtions(currentChair%2))
-		//})
 	}
 }
