@@ -1,4 +1,5 @@
 package main
+
 import (
 	"google.golang.org/protobuf/proto"
 	"gowebsocket/impl"
@@ -6,10 +7,13 @@ import (
 	"gowebsocket/teenpatti"
 	"time"
 )
+
 func SendResponseByServer(data []byte) {
 	if len(data) > 0 {
 		err := gConn.WriteMessage(data)
-		if err != nil {gConn.Close()}
+		if err != nil {
+			gConn.Close()
+		}
 	}
 }
 
@@ -25,7 +29,7 @@ func getDataByProtocol(conn *impl.Connection, len int32, gatetype int32, msgtype
 		data = SendPlayerBalanceData()
 	}
 	if gatetype == 1100 && msgtype == 3 {
-		data = SendUserAttri()
+		//data = SendUserAttri()
 	}
 	if gatetype == 1100 && msgtype == 15 {
 		data = SendHorseRaceLamp()
@@ -38,13 +42,18 @@ func getDataByProtocol(conn *impl.Connection, len int32, gatetype int32, msgtype
 	}
 	if gatetype == 1101 && msgtype == 5 {
 		data = SendMatchTable()
-		callByTimeID("GAME_TABLE_INFO_TIMER",10*time.Second, func() {
+		callByTimeID("GAME_TABLE_INFO_TIMER", 10*time.Second, func() {
 			SendResponseByServer(SendMatchTableResult())
 		})
 	}
 	if gatetype == 4002 && msgtype == 1 {
 		data = SendTeenPattiTableStatus()
-
+		if gConnectMax > 0 {
+			for i := 0; i < int(gConnectMax); i++ {
+				gConnArray[i].WriteMessage(data)
+			}
+		}
+		return
 	}
 	if gatetype == 4002 && msgtype == 3 {
 		data = SendTeenPattiPlayerReady()
@@ -95,14 +104,14 @@ func getDataByProtocol(conn *impl.Connection, len int32, gatetype int32, msgtype
 	//主动推送倒计时信息
 	if gatetype == int32(platform.ServerType_SERVER_TYPE_TEEPATTI_+2) &&
 		msgtype == int32(teenpatti.TeenpattiCmd_CMD_C_MATCH_READY_REQ) &&
-			err == nil {
-		SendResponseByServer(SendGameStartClock())
-		SendResponseByServer(SendPlayersCardData())
-		callByTimeID("GAME_ACTION_NOTIFY_TIMER",
-			3*time.Second,
-			func() {
-			SendResponseByServer(SendPlayersAtions(currentChair%2))
-		})
+		err == nil {
+
+		//SendResponseByServer(SendGameStartClock())
+		//SendResponseByServer(SendPlayersCardData())
+		//callByTimeID("GAME_ACTION_NOTIFY_TIMER",
+		//	3*time.Second,
+		//	func() {
+		//	SendResponseByServer(SendPlayersAtions(currentChair%2))
+		//})
 	}
 }
-
