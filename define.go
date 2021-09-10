@@ -23,7 +23,7 @@ var (
 	balanceInfo      platform.GetPlayerBalanceResponse      //用户余额
 	userAttrib       platform.UserAttri                     //用户属性
 	userAttribArray  platform.MSG_GET_USER_ATTRI_RESP       //用户属性结构
-	loginResponse    *platform.LoginResponse                //登陆结果
+	loginResponse    platform.LoginResponse                 //登陆结果
 	chair            *teenpatti.ChairStatus                 //座位属性
 	tableStatus      *teenpatti.MSG_C_GET_TABLE_STATUS_RESP //桌子状态
 	dealcard         *teenpatti.MSG_C_GAME_DEALCARDS_RESP   //发牌结构

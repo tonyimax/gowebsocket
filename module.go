@@ -69,7 +69,7 @@ func Init() {
 		Head:   "", //头像
 	}
 	//登陆结果
-	loginResponse = &platform.LoginResponse{
+	loginResponse = platform.LoginResponse{
 		Result: 0,
 		UserId: 0,
 	}
@@ -218,4 +218,14 @@ func buildTableInfo(tableId int) proto.Message {
 	tableInfo.GameType = 4002
 	tableInfo.GameLevel = 5
 	return &tableInfo
+}
+
+func buildLoginResult() proto.Message {
+	loginResponse.Result = 0
+	if gConnectMax > 1 {
+		loginResponse.UserId = 602684
+	} else {
+		loginResponse.UserId = 573232
+	}
+	return &loginResponse
 }

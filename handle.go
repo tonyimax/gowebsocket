@@ -121,7 +121,7 @@ func SendNetworkPingPong() []byte {
 
 func SendGatewayLogin() []byte {
 	sCmd := int32(platform.ServerGatewayCmd_CMD_GATEWAY_LOGIN_RESP)
-	return packHallData(GW, sCmd, loginResponse)
+	return packHallData(GW, sCmd, buildLoginResult())
 }
 
 func SendUserAttrib() []byte {
