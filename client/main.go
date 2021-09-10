@@ -129,7 +129,7 @@ func main() {
 	// wsc.sendMsgChan <- makeAction(1000, 5, 10)  //balance
 	// wsc.sendMsgChan <- makeAction(1000, 7, 10)  //repeat login
 	// wsc.sendMsgChan <- makeAction(1000, 9, 10)  //send ping pong
-	// wsc.sendMsgChan <- makeAction(1100, 9, 15) //money
+	wsc.sendMsgChan <- makeAction(1100, 9, 15) //money
 	//wsc.sendMsgChan <- makeAction(1100, 3, 10) //userinfo
 	// wsc.sendMsgChan <- makeAction(1100, 11, 10) //userinfo
 	// wsc.sendMsgChan <- makeAction(1100, 13, 10) //userinfo
@@ -152,12 +152,12 @@ func main() {
 	// wsc.sendMsgChan <- makeAction(4002, 62, 10)  //chat
 	// wsc.sendMsgChan <- makeAction(4002, 100, 10) //freetable
 
-	v:=0
-	for  {
-		fmt.Println(v,v%2)
-		time.Sleep(2*time.Second)
-		v=v+1
-	}
+	//v:=0
+	//for  {
+	//	fmt.Println(v,v%2)
+	//	time.Sleep(2*time.Second)
+	//	v=v+1
+	//}
 
 	//d := []byte{8, 251, 238, 35, 18, 2, 8, 3}
 	// p := &teenpatti.MSG_C_GAME_READY_3_RESP{}

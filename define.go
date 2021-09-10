@@ -17,10 +17,10 @@ var (
 	gameLevelData    *platform.GameLevelDesc
 	roomInfo         *platform.TeepattiLevelDesc            //房间信息
 	tableUser        *platform.GameUser                     //桌子上用户信息
-	tableInfo        *platform.MatchOKResponse              //桌子信息
+	tableInfo        platform.MatchOKResponse               //桌子信息
 	matchResponse    *platform.MatchResponse                //通知匹配
 	gameKindResponse platform.GameKindResponse              //
-	balanceInfo      *platform.GetPlayerBalanceResponse     //用户余额
+	balanceInfo      platform.GetPlayerBalanceResponse      //用户余额
 	userAttrib       platform.UserAttri                     //用户属性
 	userAttribArray  platform.MSG_GET_USER_ATTRI_RESP       //用户属性结构
 	loginResponse    *platform.LoginResponse                //登陆结果

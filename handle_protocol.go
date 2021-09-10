@@ -64,18 +64,18 @@ func getDataByProtocol(conn *impl.Connection, len int32, gatetype int32, msgtype
 	if gatetype == 4002 && msgtype == 3 {
 		data = SendTeenPattiPlayerReady()
 		BoardCaseMsg(data, "SendTeenPattiPlayerReady")
-		callByTimeID("GAME_BEGIN_CLOCK_TIMER", 1*time.Second, func() {
-			data = SendGameStartClock()
-			BoardCaseMsg(data, "SendGameStartClock")
-		})
-		callByTimeID("GAME_BEGIN_CLOCK_TIMER", 3*time.Second, func() {
-			data = SendPlayersCardData()
-			BoardCaseMsg(data, "SendPlayersCardData")
-		})
-		callByTimeID("GAME_ACTION_NOTIFY_TIMER", 3*time.Second, func() {
-			data = SendPlayersAtions(1)
-			BoardCaseMsg(data, "SendPlayersAtions")
-		})
+		//callByTimeID("GAME_BEGIN_CLOCK_TIMER", 1*time.Second, func() {
+		//	data = SendGameStartClock()
+		//	BoardCaseMsg(data, "SendGameStartClock")
+		//})
+		//callByTimeID("GAME_BEGIN_CLOCK_TIMER", 3*time.Second, func() {
+		//	data = SendPlayersCardData()
+		//	BoardCaseMsg(data, "SendPlayersCardData")
+		//})
+		//callByTimeID("GAME_ACTION_NOTIFY_TIMER", 3*time.Second, func() {
+		//	data = SendPlayersAtions(1)
+		//	BoardCaseMsg(data, "SendPlayersAtions")
+		//})
 	}
 	if gatetype == 4002 && msgtype == 7 {
 

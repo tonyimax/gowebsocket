@@ -86,16 +86,12 @@ func SendTeenPattiPlayerReady() []byte {
 
 func SendTeenPattiTableStatus() []byte {
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_GET_TABLE_STATUS_RESP)
-	for i := 0; i < int(gConnectMax); i++ {
-		tableStatus.Charis[i].User = tableUser
-		tableStatus.Charis[i].ChairIndex = uint32(i)
-	}
 	return packGameData(TP, sCmd, tableStatus, tableInfo.TableId)
 }
 
 func SendMatchTableResult() []byte {
 	sCmd := int32(platform.ServerMatchCmd_CMD_MATCH_OK_RESP)
-	return packHallData(MATCH, sCmd, tableInfo)
+	return packHallData(MATCH, sCmd, buildTableInfo(587643))
 }
 
 func SendMatchTable() []byte {
@@ -134,11 +130,8 @@ func SendUserAttrib() []byte {
 }
 
 func SendPlayerBalanceData() []byte {
-	data, _ := proto.Marshal(balanceInfo)
-	pData := packageData(CMD,
-		int32(platform.ServerCommonCmd_CMD_GET_PLAYER_BALANCE_RESP),
-		data, int64(len(data)))
-	return pData
+	sCmd := int32(platform.ServerCommonCmd_CMD_GET_PLAYER_BALANCE_RESP)
+	return packHallData(CMD, sCmd, buildBalanceData(602684))
 }
 
 func packageData(main_cmd int32, sub_cmd int32, protoData []byte, dataSize int64) []byte {

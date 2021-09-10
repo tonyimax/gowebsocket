@@ -27,12 +27,12 @@ func Init() {
 		Fantasytime:   0,                         //是否支持ft，0：不支持，1：支持
 	}
 	//匹配成功通知
-	tableInfo = &platform.MatchOKResponse{
+	tableInfo = platform.MatchOKResponse{
 		Result:    0, //結果      0：成功：100：用户余额不够；101：申请的游戏已经过期；102：账户被限制，不能匹配；103：服务器正在维护中:105：人数太多
-		GameType:  0, //游戏主协议 4002 这个值就是动态ServerType，后续我们就正式开始游戏了
-		TableId:   0, //桌号      587643
-		GameKind:  0, //游戏种类   4:TeenPatti
-		GameLevel: 0, //级别   	  5
+		GameType:  0, //这个值就是动态ServerType，后续我们就正式开始游戏了
+		TableId:   0, //桌号
+		GameKind:  0, //游戏种类
+		GameLevel: 0, //级别
 	}
 
 	//桌子上的用户
@@ -55,7 +55,7 @@ func Init() {
 		TeepattiLevels: []*platform.TeepattiLevelDesc{}, //游戏房间明细 roomInfo
 	}
 	//用户金币结构
-	balanceInfo = &platform.GetPlayerBalanceResponse{
+	balanceInfo = platform.GetPlayerBalanceResponse{
 		Result:       0, //请求结果 0:成功
 		Balance:      0, //账户余额
 		BalanceWins:  0, //提现余额
@@ -200,4 +200,22 @@ func buildUserInfo(uid uint32) proto.Message {
 	users[602684] = &platform.UserAttri{UserId: 602684, Head: "118", Nick: "U602684"}
 	userAttribArray.UserAttris = []*platform.UserAttri{users[uid]}
 	return &userAttribArray
+}
+
+func buildBalanceData(uid uint32) proto.Message {
+	balanceInfo.Balance = 888888
+	balanceInfo.Result = 0
+	balanceInfo.BalanceWins = 10000
+	balanceInfo.GameCurrency = platform.CurrencyKind_CK_Money
+	balanceInfo.Partices = 1000000
+	return &balanceInfo
+}
+
+func buildTableInfo(tableId int) proto.Message {
+	tableInfo.Result = 0
+	tableInfo.TableId = 587643
+	tableInfo.GameKind = 4
+	tableInfo.GameType = 4002
+	tableInfo.GameLevel = 5
+	return &tableInfo
 }
