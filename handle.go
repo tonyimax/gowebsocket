@@ -1,4 +1,5 @@
 package main
+
 import (
 	"fmt"
 	"google.golang.org/protobuf/proto"
@@ -6,45 +7,46 @@ import (
 	"gowebsocket/teenpatti"
 	"time"
 )
-func packHallData(mCmd int32 ,sCmd int32,msg proto.Message) []byte {
-	data,_:=proto.Marshal(msg)
-	return packageData(mCmd, sCmd,data, int64(len(data)))
+
+func packHallData(mCmd int32, sCmd int32, msg proto.Message) []byte {
+	data, _ := proto.Marshal(msg)
+	return packageData(mCmd, sCmd, data, int64(len(data)))
 }
 
-func packGameData(mCmd int32 ,sCmd int32,msg proto.Message,tableId uint32) []byte {
-	byteData,_:=proto.Marshal(msg)
-	tb:=&teenpatti.TableData{
+func packGameData(mCmd int32, sCmd int32, msg proto.Message, tableId uint32) []byte {
+	byteData, _ := proto.Marshal(msg)
+	tb := &teenpatti.TableData{
 		TableId: tableId,
-		Data: byteData,
+		Data:    byteData,
 	}
-	return packHallData(mCmd,sCmd,tb)
+	return packHallData(mCmd, sCmd, tb)
 }
 
-func SendGameEnd() []byte  {
+func SendGameEnd() []byte {
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_MATCH_FINISH_RESP)
-	return packGameData(TP,sCmd,gameEnd,tableInfo.TableId)
+	return packGameData(TP, sCmd, gameEnd, tableInfo.TableId)
 }
 
-func SendPackedCard() []byte  {
+func SendPackedCard() []byte {
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_GAME_SETTLE_RESP)
-	return packGameData(TP,sCmd,gameSettle,tableInfo.TableId)
+	return packGameData(TP, sCmd, gameSettle, tableInfo.TableId)
 }
 
 func SendGameBet(protoData []byte) []byte {
-	tbl:=&teenpatti.TableData{}
-	proto.Unmarshal(protoData,tbl)
-	msg:=&teenpatti.MSG_C_GAME_BET_REQ{}
-	proto.Unmarshal(tbl.Data,msg)
+	tbl := &teenpatti.TableData{}
+	proto.Unmarshal(protoData, tbl)
+	msg := &teenpatti.MSG_C_GAME_BET_REQ{}
+	proto.Unmarshal(tbl.Data, msg)
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_GAME_BET_RESP)
 	if gameBet.BetOdd == 0 {
-		callByTimeID("GAME_PACKED_CARD_TIMER",2*time.Second, func() {
+		callByTimeID("GAME_PACKED_CARD_TIMER", 2*time.Second, func() {
 			SendResponseByServer(SendPackedCard())
 		})
-		callByTimeID("GAME_END_TIMER",10*time.Second, func() {
+		callByTimeID("GAME_END_TIMER", 10*time.Second, func() {
 			SendResponseByServer(SendGameEnd())
 		})
 	}
-	return packGameData(TP,sCmd,gameBet,tableInfo.TableId)
+	return packGameData(TP, sCmd, gameBet, tableInfo.TableId)
 }
 
 func SendPlayerChat() []byte {
@@ -57,49 +59,53 @@ func SendPlayerChat() []byte {
 
 func SendPlayerLookCard() []byte {
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_GAME_SEE_RESP)
-	return packGameData(TP,sCmd,gameSeeCard,tableInfo.TableId)
+	return packGameData(TP, sCmd, gameSeeCard, tableInfo.TableId)
 }
 
 func SendPlayersAtions(iChair uint32) []byte {
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_GAME_NOTICE_RESP)
-	return packGameData(TP,sCmd,gameNotice,tableInfo.TableId)
+	return packGameData(TP, sCmd, gameNotice, tableInfo.TableId)
 }
 
 func SendPlayersCardData() []byte {
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_GAME_DEALCARDS_RESP)
-	return packGameData(TP,sCmd,dealcard,tableInfo.TableId)
+	return packGameData(TP, sCmd, dealcard, tableInfo.TableId)
 }
 
 func SendGameStartClock() []byte {
-	resp :=&teenpatti.MSG_C_GAME_READY_3_RESP{Times: 5,}
+	resp := &teenpatti.MSG_C_GAME_READY_3_RESP{Times: 5}
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_GAME_READY_3_RESP)
-	return packGameData(TP,sCmd,resp,tableInfo.TableId)
+	return packGameData(TP, sCmd, resp, tableInfo.TableId)
 }
 
 func SendTeenPattiPlayerReady() []byte {
-	resp := &teenpatti.MSG_C_COMMON_RESP{Result:0,}
+	resp := &teenpatti.MSG_C_COMMON_RESP{Result: 0}
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_MATCH_READY_RESP)
-	return packGameData(TP,sCmd,resp,tableInfo.TableId)
+	return packGameData(TP, sCmd, resp, tableInfo.TableId)
 }
 
 func SendTeenPattiTableStatus() []byte {
 	sCmd := int32(teenpatti.TeenpattiCmd_CMD_C_GET_TABLE_STATUS_RESP)
-	return packGameData(TP,sCmd,tableStatus,tableInfo.TableId)
+	for i := 0; i < int(gConnectMax); i++ {
+		tableStatus.Charis[i].User = tableUser
+		tableStatus.Charis[i].ChairIndex = uint32(i)
+	}
+	return packGameData(TP, sCmd, tableStatus, tableInfo.TableId)
 }
 
 func SendMatchTableResult() []byte {
 	sCmd := int32(platform.ServerMatchCmd_CMD_MATCH_OK_RESP)
-	return packHallData(MATCH,sCmd,tableInfo)
+	return packHallData(MATCH, sCmd, tableInfo)
 }
 
 func SendMatchTable() []byte {
 	sCmd := int32(platform.ServerMatchCmd_CMD_MATCH_RESP)
-	return packHallData(MATCH,sCmd,matchResponse)
+	return packHallData(MATCH, sCmd, matchResponse)
 }
 
 func SendGameRoomList(gameKind int32) []byte {
 	sCmd := int32(platform.ServerMatchCmd_CMD_GET_GAME_KIND_RESP)
-	return packHallData(MATCH,sCmd,gameKindResponse)
+	return packHallData(MATCH, sCmd, gameKindResponse)
 }
 
 func SendHorseRaceLamp() []byte {
@@ -119,11 +125,15 @@ func SendNetworkPingPong() []byte {
 
 func SendGatewayLogin() []byte {
 	sCmd := int32(platform.ServerGatewayCmd_CMD_GATEWAY_LOGIN_RESP)
-	return packHallData(GW,sCmd,loginResponse)
+	return packHallData(GW, sCmd, loginResponse)
 }
 
 func SendUserAttri() []byte {
-	userResp := &platform.MSG_GET_USER_ATTRI_RESP{UserAttris: userAttris,}
+	userResp := &platform.MSG_GET_USER_ATTRI_RESP{
+		UserAttris: []*platform.UserAttri{
+			userAttri,
+		},
+	}
 	data, _ := proto.Marshal(userResp)
 	pData := packageData(CMD,
 		int32(platform.ServerCommonCmd_CMD_GET_USER_ATTRI_RESP),
@@ -192,7 +202,7 @@ func unpkgData(data []byte) (int32, int32, int32, int32, []byte) {
 	return l, gw, pb, uid, pBytes
 }
 
-func callByTimeID(timerId string, tick time.Duration ,callback func())  {
+func callByTimeID(timerId string, tick time.Duration, callback func()) {
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
 	done := make(chan bool)
@@ -208,9 +218,7 @@ func callByTimeID(timerId string, tick time.Duration ,callback func())  {
 			return
 		case t := <-ticker.C:
 			fmt.Println(fmt.Sprintf("TimerId:%s,Date: %v-%v-%v Time: %v:%v:%v",
-				timerId,t.Year(),t.Month(),t.Day(),t.Hour(),t.Minute(),t.Second()))
+				timerId, t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second()))
 		}
 	}
 }
-
-
