@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"google.golang.org/protobuf/proto"
 	"gowebsocket/platform"
 	"gowebsocket/teenpatti"
 )
 
 func Init() {
+	GLoginUsers = make(map[string]uint32, 2)
 	//游戏级别的基础定义
 	gameLevelData = &platform.GameLevelDesc{
 		LevelId:       0,  //房间类型ID
@@ -226,6 +228,11 @@ func buildLoginResult() proto.Message {
 		loginResponse.UserId = 602684
 	} else {
 		loginResponse.UserId = 573232
+	}
+	fmt.Println(loginResponse.UserId, "is Login!")
+	for i := 0; i < int(gConnectMax); i++ {
+		_, y := gConnArray[i].RemoteAddr()
+		GLoginUsers[y] = loginResponse.UserId
 	}
 	return &loginResponse
 }

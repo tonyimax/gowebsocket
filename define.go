@@ -11,6 +11,7 @@ var (
 	CMD             = int32(platform.ServerType_SERVER_TYPE_COMMON)
 	GW              = int32(platform.ServerType_SERVER_TYPE_GATEWAY)
 	GamePlayerCount = 5
+	GLoginUsers     map[string]uint32
 )
 
 var (
