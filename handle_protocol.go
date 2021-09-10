@@ -36,10 +36,12 @@ func getDataByProtocol(conn *impl.Connection, len int32, gatetype int32, msgtype
 		data = SendNetworkPingPong()
 	}
 	if gatetype == 1100 && msgtype == 9 {
-		data = SendPlayerBalanceData()
+		_, addr := conn.RemoteAddr()
+		data = SendPlayerBalanceData(addr)
 	}
 	if gatetype == 1100 && msgtype == 3 {
-		data = SendUserAttrib()
+		_, addr := conn.RemoteAddr()
+		data = SendUserAttrib(addr)
 	}
 	if gatetype == 1100 && msgtype == 15 {
 		data = SendHorseRaceLamp()

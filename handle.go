@@ -124,14 +124,14 @@ func SendGatewayLogin() []byte {
 	return packHallData(GW, sCmd, buildLoginResult())
 }
 
-func SendUserAttrib() []byte {
+func SendUserAttrib(addr string) []byte {
 	sCmd := int32(platform.ServerCommonCmd_CMD_GET_USER_ATTRI_RESP)
-	return packHallData(CMD, sCmd, buildUserInfo(602684))
+	return packHallData(CMD, sCmd, buildUserInfo(GLoginUsers[addr]))
 }
 
-func SendPlayerBalanceData() []byte {
+func SendPlayerBalanceData(addr string) []byte {
 	sCmd := int32(platform.ServerCommonCmd_CMD_GET_PLAYER_BALANCE_RESP)
-	return packHallData(CMD, sCmd, buildBalanceData(602684))
+	return packHallData(CMD, sCmd, buildBalanceData(GLoginUsers[addr]))
 }
 
 func packageData(main_cmd int32, sub_cmd int32, protoData []byte, dataSize int64) []byte {
