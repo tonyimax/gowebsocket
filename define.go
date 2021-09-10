@@ -14,11 +14,6 @@ var (
 )
 
 var (
-	isMatchOK        bool
-	isPacked         bool
-	isNotify         bool
-	currentChair     uint32
-	dealer           uint32
 	gameLevelData    *platform.GameLevelDesc
 	roomInfo         *platform.TeepattiLevelDesc            //房间信息
 	tableUser        *platform.GameUser                     //桌子上用户信息
@@ -26,7 +21,8 @@ var (
 	matchResponse    *platform.MatchResponse                //通知匹配
 	gameKindResponse platform.GameKindResponse              //
 	balanceInfo      *platform.GetPlayerBalanceResponse     //用户余额
-	userAttri        *platform.UserAttri                    //用户属性
+	userAttrib       platform.UserAttri                     //用户属性
+	userAttribArray  platform.MSG_GET_USER_ATTRI_RESP       //用户属性结构
 	loginResponse    *platform.LoginResponse                //登陆结果
 	chair            *teenpatti.ChairStatus                 //座位属性
 	tableStatus      *teenpatti.MSG_C_GET_TABLE_STATUS_RESP //桌子状态

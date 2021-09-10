@@ -35,7 +35,7 @@ func Init() {
 		GameLevel: 0, //级别   	  5
 	}
 
-	//桌子上的用户{uid:602684,573232,coin:,8146000,4027000,nick:,U602684,U573232,head:118,111}
+	//桌子上的用户
 	tableUser = &platform.GameUser{
 		Uid:      0,  //用户ID
 		RealUser: 0,  //是否真实玩家
@@ -63,7 +63,7 @@ func Init() {
 		GameCurrency: platform.CurrencyKind_CK_INVALID,
 	}
 	//用户属性
-	userAttri = &platform.UserAttri{
+	userAttrib = platform.UserAttri{
 		UserId: 0,  //用户ID
 		Nick:   "", //昵称
 		Head:   "", //头像
@@ -166,6 +166,10 @@ func Init() {
 		TableId: 0, //桌子ID
 		Reason:  0, //解散原因
 	}
+
+	userAttribArray = platform.MSG_GET_USER_ATTRI_RESP{
+		UserAttris: []*platform.UserAttri{},
+	}
 }
 
 func buildGameRoomData(gameKind int32) proto.Message {
@@ -188,4 +192,12 @@ func buildGameRoomData(gameKind int32) proto.Message {
 	gameKindResponse.TeepattiLevels = []*platform.TeepattiLevelDesc{roomInfo}
 
 	return &gameKindResponse
+}
+
+func buildUserInfo(uid uint32) proto.Message {
+	users := map[uint32]*platform.UserAttri{}
+	users[573232] = &platform.UserAttri{UserId: 573232, Head: "111", Nick: "U573232"}
+	users[602684] = &platform.UserAttri{UserId: 602684, Head: "118", Nick: "U602684"}
+	userAttribArray.UserAttris = []*platform.UserAttri{users[uid]}
+	return &userAttribArray
 }

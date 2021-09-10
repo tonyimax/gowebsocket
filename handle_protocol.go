@@ -39,7 +39,7 @@ func getDataByProtocol(conn *impl.Connection, len int32, gatetype int32, msgtype
 		data = SendPlayerBalanceData()
 	}
 	if gatetype == 1100 && msgtype == 3 {
-		//data = SendUserAttri()
+		data = SendUserAttrib()
 	}
 	if gatetype == 1100 && msgtype == 15 {
 		data = SendHorseRaceLamp()

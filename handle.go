@@ -128,17 +128,9 @@ func SendGatewayLogin() []byte {
 	return packHallData(GW, sCmd, loginResponse)
 }
 
-func SendUserAttri() []byte {
-	userResp := &platform.MSG_GET_USER_ATTRI_RESP{
-		UserAttris: []*platform.UserAttri{
-			userAttri,
-		},
-	}
-	data, _ := proto.Marshal(userResp)
-	pData := packageData(CMD,
-		int32(platform.ServerCommonCmd_CMD_GET_USER_ATTRI_RESP),
-		data, int64(len(data)))
-	return pData
+func SendUserAttrib() []byte {
+	sCmd := int32(platform.ServerCommonCmd_CMD_GET_USER_ATTRI_RESP)
+	return packHallData(CMD, sCmd, buildUserInfo(602684))
 }
 
 func SendPlayerBalanceData() []byte {
