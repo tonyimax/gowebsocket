@@ -105,7 +105,7 @@ func SendMatchTable() []byte {
 
 func SendGameRoomList(gameKind int32) []byte {
 	sCmd := int32(platform.ServerMatchCmd_CMD_GET_GAME_KIND_RESP)
-	return packHallData(MATCH, sCmd, gameKindResponse)
+	return packHallData(MATCH, sCmd, buildGameRoomData(gameKind))
 }
 
 func SendHorseRaceLamp() []byte {

@@ -1,31 +1,30 @@
 package main
 
 import (
+	"google.golang.org/protobuf/proto"
 	"gowebsocket/platform"
 	"gowebsocket/teenpatti"
 )
 
 func Init() {
-	isMatchOK = false
-	isPacked = false
-	isNotify = false
-	currentChair = 0
-	dealer = 0
 	//游戏级别的基础定义
 	gameLevelData = &platform.GameLevelDesc{
-		LevelId:       0,                                //房间类型ID 5
-		CurrencyKind:  platform.CurrencyKind_CK_INVALID, //当前游戏房间类型-> 0：未知，1：金币，2: 练习
-		CurrencyLimit: 0,                                //100 进入限制（这个逻辑客户端不需要判定，只显示，服务器会下发，免得以后要修改逻辑）
-		LevelName:     "",                               //级别名字，例如（中级房） Level I
-		UserCount:     0,                                //这个级别有多少个用户在玩 888
+		LevelId:       0,  //房间类型ID
+		CurrencyKind:  0,  //当前游戏房间类型-> 0：未知，1：金币，2: 练习
+		CurrencyLimit: 0,  //进入限制（这个逻辑客户端不需要判定，只显示，服务器会下发，免得以后要修改逻辑）
+		LevelName:     "", //级别名字，例如（中级房）
+		UserCount:     0,  //这个级别有多少个用户在玩
+		TaxPermillage: 0,  //抽水比率（千分比）
+		GameId:        0,  //room number
 	}
 	//每一个级别的数据描叙
 	roomInfo = &platform.TeepattiLevelDesc{
 		GameLevel:     &platform.GameLevelDesc{}, //游戏级别的基础定义
-		Blind:         0,                         //最大盲注次数 10
-		SingleMaxBet:  0,                         //单人最大下注金额限制 1280
-		TableMaxBet:   0,                         //桌子最大下注金额限制 10240
-		TimesFeeRatio: 0,                         //台费系数 10
+		Blind:         0,                         //最大盲注次数
+		SingleMaxBet:  0,                         //单人最大下注金额限制
+		TableMaxBet:   0,                         //桌子最大下注金额限制
+		TimesFeeRatio: 0,                         //台费系数
+		Fantasytime:   0,                         //是否支持ft，0：不支持，1：支持
 	}
 	//匹配成功通知
 	tableInfo = &platform.MatchOKResponse{
@@ -51,7 +50,7 @@ func Init() {
 		AverageTime: 0, //平均匹配时间：单位秒
 	}
 	//游戏类型
-	gameKindResponse = &platform.GameKindResponse{
+	gameKindResponse = platform.GameKindResponse{
 		GameKind:       []platform.GameKind{},           //游戏类型 platform.GameKind_GAME_KIND_TEEPATTI
 		TeepattiLevels: []*platform.TeepattiLevelDesc{}, //游戏房间明细 roomInfo
 	}
@@ -167,4 +166,26 @@ func Init() {
 		TableId: 0, //桌子ID
 		Reason:  0, //解散原因
 	}
+}
+
+func buildGameRoomData(gameKind int32) proto.Message {
+	gameLevelData.LevelId = 5
+	gameLevelData.CurrencyKind = platform.CurrencyKind_CK_Money
+	gameLevelData.CurrencyLimit = 100
+	gameLevelData.LevelName = "Level I"
+	gameLevelData.UserCount = 888
+	gameLevelData.TaxPermillage = 0
+	gameLevelData.GameId = 0
+
+	roomInfo.GameLevel = gameLevelData
+	roomInfo.Blind = 10
+	roomInfo.SingleMaxBet = 1280
+	roomInfo.TableMaxBet = 10240
+	roomInfo.TimesFeeRatio = 10
+	roomInfo.Fantasytime = 0
+
+	gameKindResponse.GameKind = []platform.GameKind{platform.GameKind_GAME_KIND_TEEPATTI}
+	gameKindResponse.TeepattiLevels = []*platform.TeepattiLevelDesc{roomInfo}
+
+	return &gameKindResponse
 }

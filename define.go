@@ -24,7 +24,7 @@ var (
 	tableUser        *platform.GameUser                     //桌子上用户信息
 	tableInfo        *platform.MatchOKResponse              //桌子信息
 	matchResponse    *platform.MatchResponse                //通知匹配
-	gameKindResponse *platform.GameKindResponse             //
+	gameKindResponse platform.GameKindResponse              //
 	balanceInfo      *platform.GetPlayerBalanceResponse     //用户余额
 	userAttri        *platform.UserAttri                    //用户属性
 	loginResponse    *platform.LoginResponse                //登陆结果
